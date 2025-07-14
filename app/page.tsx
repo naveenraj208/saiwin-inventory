@@ -14,6 +14,7 @@ export default function ProductsPage() {
   const [openProductId, setOpenProductId] = useState<string | null>(null);
   const [sales, setSales] = useState<Sale[]>([]);
   const [loadingSales, setLoadingSales] = useState(false);   // ✅ now used
+  
 
   /* ─────────────────────── fetch products ─────────────────── */
   useEffect(() => {

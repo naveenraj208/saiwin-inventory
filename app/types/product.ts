@@ -23,3 +23,16 @@ export interface Product {
 
   }
   
+export interface SaleInterface {
+
+  id: string;
+
+  product_id: string;
+
+  quantity: number;
+
+  price: number;
+
+  created_at: string;
+
+}

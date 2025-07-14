@@ -29,11 +29,14 @@ export default function ProductCard({
       <p className="mt-2 text-sm text-gray-700 line-clamp-4">
         {product.description}
       </p>
+      <p className="mt-2 text-sm text-green-700 line-clamp-4">
+        {product.company}
+      </p>
 
       {/* Stock */}
       <p className="mt-4 font-medium">
         Total in Store:{" "}
-        <span className="text-blue-600 font-bold">
+        <span className="text-blue-900 font-bold">
           {product.total_in_store}
         </span>
       </p>

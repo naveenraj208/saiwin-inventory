@@ -26,7 +26,7 @@ const exportPDF = (sales: Sale[]) => {
   const options: Partial<UserOptions> = {
     head: [[
       "S.No", "Name", "Mob", "Location",
-      "Description", "Color", "Qty", "Type", "Added By"
+      "Description", "Color", "Qty", "Type", "Added By",'company'
     ]],
     body: sales.map((s, idx) => [
       idx + 1,
@@ -38,6 +38,7 @@ const exportPDF = (sales: Sale[]) => {
       s.quantity,
       s.type,
       s.created_by || "—",
+      s.company
     ]),
     styles: { fontSize: 8 },
     margin: { top: 40 },
@@ -81,6 +82,7 @@ export default function SalesTable({ sales }: { sales: Sale[] }) {
               <th className="px-3 py-2 text-left">Qty</th>
               <th className="px-3 py-2 text-left">Type</th>
               <th className="px-3 py-2 text-left">Added By</th>
+              <th className="px-3 py-2 text-left">Company</th>
             </tr>
           </thead>
           <tbody>
@@ -110,6 +112,7 @@ export default function SalesTable({ sales }: { sales: Sale[] }) {
                 <td className="px-3 py-2 text-gray-800">
                   {s.created_by || "—"}
                 </td>
+                <td className="px-3 py-2">{s.company}</td>
               </tr>
             ))}
             {sales.length === 0 && (
