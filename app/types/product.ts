@@ -1,9 +1,11 @@
+export type Company = "Saiwin Lights" | "Prana Lights";
 export interface Product {
     id: string;
     name: string;
     description: string;
     productNo: string;
     total_in_store: number;
+    company: Company;  
   }
   
   export interface Sale {
@@ -17,6 +19,7 @@ export interface Product {
     type: 'bought' | 'sold';
     customer_name:string;
     created_by:string;
+    company: Company;  
 
   }
   

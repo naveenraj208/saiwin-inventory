@@ -17,6 +17,7 @@ export default function AddProductPage() {
   const [productNo, setProductNo]     = useState('');
   const [description, setDescription] = useState('');
   const [total, setTotal]             = useState<number | ''>('');
+  const [company, setCompany]         = useState<'saiwin_lights' | 'prana_lights' | ''>('');
   const [saving, setSaving]           = useState(false);
   const [error, setError]             = useState('');
 
@@ -26,14 +27,15 @@ export default function AddProductPage() {
     setProductNo('');
     setDescription('');
     setTotal('');
+    setCompany('');
     setError('');
   };
 
   const handleSave = async () => {
     setError('');
 
-    // basic validation (redundant but keeps code‑level guard)
-    if (!name || !productNo || !description || total === '') {
+    // basic validation
+    if (!name || !productNo || !description || total === '' || !company) {
       setError('All fields are required.');
       return;
     }
@@ -51,6 +53,7 @@ export default function AddProductPage() {
         product_no: productNo,
         description,
         total_in_store: Number(total),
+        company,                     // 👈 NEW FIELD
       });
 
     setSaving(false);
@@ -111,6 +114,23 @@ export default function AddProductPage() {
               }
               placeholder="0"
             />
+
+            {/* Company Dropdown */}
+            <label className="block">
+              <span className="font-medium">Company</span>
+              <select
+                required
+                className="mt-1 w-full rounded border px-3 py-2 text-sm focus:outline-none focus:ring focus:border-blue-400"
+                value={company}
+                onChange={(e) =>
+                  setCompany(e.target.value as 'saiwin_lights' | 'prana_lights' | '')
+                }
+              >
+                <option value="">Select Company</option>
+                <option value="saiwin lights">Saiwin Lights</option>
+                <option value="prana lights">Prana Lights</option>
+              </select>
+            </label>
 
             {error && <p className="text-red-600 text-sm">{error}</p>}
           </div>

@@ -2,7 +2,8 @@
 "use server";
 
 import { cookies } from "next/headers";
-import {supabase} from "../lib/supabase";          // adjust the alias if needed
+import {supabase} from "../lib/supabase";
+export type Company = "Saiwin Lights" | "Prana Lights";          // adjust the alias if needed
 
 const COOKIE = "auth-demo";
 
@@ -16,7 +17,9 @@ export async function addSale(payload: {
   color: string;
   quantity: number;
   type: "bought" | "sold";
-  created_by?: string;         // optional if you pass it from client
+  created_by?: string;
+  company: Company;
+           // optional if you pass it from client
 }) {
   /* ——— 1. Determine username ——— */
   const cookieUser = (await cookies()).get(COOKIE)?.value;

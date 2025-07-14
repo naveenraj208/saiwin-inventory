@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {supabase} from "../lib/supabase";          // ✅ root‑alias import
+import { supabase } from "../lib/supabase";
 import { addSale } from "./actions";
 import Header from "../Header";
 import Sidebar from "../Sidebar";
@@ -15,6 +15,7 @@ interface Product {
   total_in_store: number;
 }
 type SaleType = "income" | "outgoing";
+type Company = "Saiwin Lights" | "Prana Lights";
 
 /* quick input utility */
 const inputCls =
@@ -34,6 +35,7 @@ export default function AddCustomerPage() {
   const [location, setLocation] = useState("");
   const [color, setColor] = useState("");
   const [qty, setQty] = useState(1);
+  const [company, setCompany] = useState<Company | "">("");
   const [saleType, setSaleType] = useState<SaleType>("income");
 
   const [error, setError] = useState("");
@@ -61,6 +63,7 @@ export default function AddCustomerPage() {
     setColor("");
     setQty(1);
     setSaleType("income");
+    setCompany("");
     setError("");
   };
 
@@ -69,7 +72,7 @@ export default function AddCustomerPage() {
     if (!selected) return;
 
     /* validation */
-    if (!customer || !mob || !location || !color || qty < 1) {
+    if (!customer || !mob || !location || !color || !company || qty < 1) {
       setError("All fields are required and quantity must be > 0.");
       return;
     }
@@ -103,8 +106,8 @@ export default function AddCustomerPage() {
         color,
         quantity: qty,
         type: saleType === "income" ? "bought" : "sold",
-        /* 👇 attach whoever is logged in */
         created_by: localStorage.getItem("username") ?? "",
+        company, 
       });
 
       /* update UI stock */
@@ -114,7 +117,7 @@ export default function AddCustomerPage() {
         )
       );
       resetModal();
-    } catch (e) {               // e is typed as unknown
+    } catch (e) {
       if (e instanceof Error) {
         setError(e.message);
       } else {
@@ -132,7 +135,6 @@ export default function AddCustomerPage() {
 
       <main className="flex-1 min-h-screen bg-gray-100 p-6">
         <Header />
-
         <h1 className="text-2xl font-bold my-6">Add Customer / Billing</h1>
 
         {loading ? (
@@ -230,6 +232,19 @@ export default function AddCustomerPage() {
                   value={qty}
                   onChange={(e) => setQty(Number(e.target.value))}
                 />
+                {/* Company Dropdown */}
+                <select
+                  className={inputCls}
+                  value={company}
+                  onChange={(e) => {
+                    const value = e.target.value as Company | "";
+                    setCompany(value);
+                  }}
+                >
+                  <option value="">Select Company</option>
+                  <option value="saiwin lights">Saiwin Lights</option>
+                  <option value="prana lights">Prana Lights</option>
+                </select>
               </div>
 
               {error && <p className="text-red-600 text-sm mb-2">{error}</p>}
