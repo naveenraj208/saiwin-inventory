@@ -23,9 +23,14 @@ export default function LoginPage() {
       // store for later so Add‑Customer can send created_by
       localStorage.setItem("username", uname);
       router.push("/");
-    } catch (err: any) {
-      setError(err.message);
+    }  catch (err) {                 // err is inferred as unknown
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Unexpected error");
+      }
     }
+    
   }
 
   return (

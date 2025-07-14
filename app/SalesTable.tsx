@@ -8,7 +8,11 @@ import autoTable, { UserOptions } from "jspdf-autotable";
 
 /* ────────────── Excel Export ────────────── */
 const exportExcel = (sales: Sale[]) => {
-  const data = sales.map(({ id: _id, ...row }) => row); // omit ID
+  const data = sales.map(sale => {
+    const entries = Object.entries(sale).filter(([key]) => key !== "id");
+    return Object.fromEntries(entries);
+  });
+   // omit ID
   const ws = XLSX.utils.json_to_sheet(data);
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "Sales");

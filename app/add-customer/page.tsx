@@ -114,8 +114,12 @@ export default function AddCustomerPage() {
         )
       );
       resetModal();
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e) {               // e is typed as unknown
+      if (e instanceof Error) {
+        setError(e.message);
+      } else {
+        setError("Unexpected error");
+      }
     } finally {
       setSaving(false);
     }
