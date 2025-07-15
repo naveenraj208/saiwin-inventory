@@ -3,6 +3,7 @@ import { Sale } from "./types/product";
 import Modal from "../Modal";
 import SalesTable from "./SalesTable";
 
+
 export default function SalesModal({
   open,
   onClose,

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { supabase } from "./lib/supabase";
 import ProductCard from "./ProductCard";
 import SalesModal from "./SalesModal";
@@ -13,8 +13,11 @@ export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [openProductId, setOpenProductId] = useState<string | null>(null);
   const [sales, setSales] = useState<Sale[]>([]);
-  const [loadingSales, setLoadingSales] = useState(false);   // ✅ now used
-  
+  const [loadingSales, setLoadingSales] = useState(false);
+
+  /* 🔎 company filter state  */
+  const COMPANY_ALL = "All";
+  const [companyFilter, setCompanyFilter] = useState<string>(COMPANY_ALL);
 
   /* ─────────────────────── fetch products ─────────────────── */
   useEffect(() => {
@@ -30,14 +33,14 @@ export default function ProductsPage() {
     if (!openProductId) return;
 
     const fetchSales = async () => {
-      setLoadingSales(true);                                 // ✅ used here
+      setLoadingSales(true);
       const { data, error } = await supabase
         .from("sales")
         .select("*")
         .eq("product_id", openProductId);
       if (error) console.error(error);
       setSales((data as Sale[]) || []);
-      setLoadingSales(false);                                // ✅ and here
+      setLoadingSales(false);
     };
     fetchSales();
   }, [openProductId]);
@@ -48,6 +51,12 @@ export default function ProductsPage() {
     setProducts(prev => prev.filter(p => p.id !== id));
   };
 
+  /* ────────────────────── derived products ─────────────────── */
+  const filteredProducts = useMemo(() => {
+    if (companyFilter === COMPANY_ALL) return products;
+    return products.filter(p => p.company?.toLowerCase() === companyFilter.toLowerCase());
+  }, [products, companyFilter]);
+
   /* ─────────────────────────── ui ─────────────────────────── */
   return (
     <div className="flex">
@@ -56,12 +65,35 @@ export default function ProductsPage() {
       <main className="flex-1 p-6 bg-gray-100 min-h-screen">
         <Header />
 
-        <h2 className="my-6 text-xl font-bold text-black">Products</h2>
+        {/* page title */}
+        <div className="my-6 flex items-center justify-between">
+          <h2 className="text-xl font-bold text-black">Products</h2>
 
+          {/* company filter aligned right */}
+          <div className="flex flex-wrap gap-2">
+            {[
+              { label: COMPANY_ALL, value: COMPANY_ALL },
+              { label: "Saiwin Lights", value: "Saiwin Lights" },
+              { label: "Prana Lights", value: "Prana Lights" },
+            ].map(({ label, value }) => (
+              <button
+                key={value}
+                onClick={() => setCompanyFilter(value)}
+                className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors
+                  ${value === companyFilter ? "bg-gray-600 text-white" : "text-gray-600 hover:bg-gray-200"}
+                  border-gray-600`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* products grid */}
         <section
-          className="grid ml-4 gap-16  grid-cols-[repeat(auto-fill,minmax(min(100%,24rem),1fr))]"
+          className="grid ml-4 gap-16 grid-cols-[repeat(auto-fill,minmax(min(100%,24rem),1fr))]"
         >
-          {products.map(product => (
+          {filteredProducts.map(product => (
             <ProductCard
               key={product.id}
               product={product}
